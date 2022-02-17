@@ -1,0 +1,11 @@
+{
+  "minify": true,
+  "jsc": {
+    "parser": {
+      "syntax": "typescript",
+      "tsx": false,
+      "target": "es2016",
+      "dynamicImport": false
+    }
+  }
+}

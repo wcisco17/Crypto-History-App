@@ -3,8 +3,6 @@ import inquirer from 'inquirer';
 
 export const DynamoActionsConfiguration = [
   'write',
-  'update',
-  'delete',
   'get'
 ] as const;
 
@@ -30,7 +28,7 @@ export async function createCommands({ actions, message, type, name }: ICreateCo
   }>([
     {
       type,
-      name: name.length <= 0 ? 'command' : name,
+      name: typeof name === 'undefined'  ? 'command' : name,
       message,
       choices: actions
     }

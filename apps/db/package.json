@@ -1,0 +1,30 @@
+{
+  "name": "@crypto-api/db",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node dist/index.js",
+    "build": "swc *.ts -d dist --config-file .swcrc",
+    "clean": "rm -rf dist && rm -rf node_modules",
+    "dev:build": "rm -rf dist && pnpm run build && pnpm run dev"
+  },
+  "keywords": [],
+  "author": "Williams Sissoko",
+  "license": "ISC",
+  "devDependencies": {
+    "@swc/cli": "^0.1.55",
+    "@swc/core": "^1.2.133",
+    "@types/node": "^17.0.10",
+    "regenerator-runtime": "^0.13.9",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.5"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.49.0",
+    "aws-sdk": "^2.1069.0",
+    "cross-fetch": "^3.1.5",
+    "dotenv": "^14.2.0",
+    "moment": "^2.29.1"
+  }
+}

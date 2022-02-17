@@ -1,0 +1,1 @@
+{"version":3,"file":"uploadS3.d.ts","sourceRoot":"","sources":["../src/uploadS3.ts"],"names":[],"mappings":"AAEA,OAAO,EAAE,qBAAqB,EAAE,MAAM,oBAAoB,CAAC;AAK3D,aAAK,SAAS,GAAG,QAAQ,GAAG,QAAQ,GAAG,KAAK,GAAG,OAAO,GAAG,MAAM,CAAA;AAE/D,wBAAgB,aAAa,CAAC,QAAQ,EAAE,MAAM,EAAE,GAAG,EAAE,SAAS,EAAE,aAAa,EAAE,MAAM,2BA0BpF"}

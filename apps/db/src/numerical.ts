@@ -1,15 +1,14 @@
-import {
+import type {
   CoinMarketCapApiReturnType,
   CoinMarketCapResult,
   CryptoCompareOHLCVResult,
-  LIMIT,
-  TimeUnit,
   TypeofHistoricalData
-} from '../types/numerical';
-import { COIN_MARKET_CAP_KEY, COIN_MARKET_URL, CRYPTO_COMPARE_KEY, CRYPTO_COMPARE_URL } from '../util/constant';
-import fetch from 'node-fetch';
-import { IHistoricalDataInput } from '../types/global';
-import { convertToUnixEpoch } from '../util/util';
+} from './numerical.types.js';
+import { LIMIT, TimeUnit } from './numerical.types';
+import { COIN_MARKET_CAP_KEY, CRYPTO_COMPARE_KEY, CRYPTO_COMPARE_URL } from './constant.js';
+import fetch from 'cross-fetch';
+import { IHistoricalDataInput } from './global.types.js';
+import { convertToUnixEpoch } from './util.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -19,20 +18,24 @@ dotenv.config();
  */
 type CoinApiInput = IHistoricalDataInput & TypeofHistoricalData
 
-export async function getHistoricalCoinAPIData<T>({ symbol, limit, time_start, historical, time_end, period_id }: CoinApiInput): Promise<T[]> {
-  const nums = (Number(limit) + Number(LIMIT));
-  const period = period_id![TimeUnit.MONTH] ? period_id![TimeUnit.MONTH] : period_id![TimeUnit.YEAR]
-  const isOHLCV = historical == 'OHLCV' ? `&period_id=${period}` : '';
+export async function getHistoricalCoinAPIData<T>({
+                                                    symbol,
+                                                    limit,
+                                                    time_start,
+                                                    historical,
+                                                    time_end,
+                                                    period_id
+                                                  }: CoinApiInput): Promise<T[] | { error: string }> {
+  const isOHLCV = historical == 'OHLCV' ? `&period_id=${period_id}` : '';
 
-  const HISTORICAL_URL = `https:rest.coinapi.io/v1/${historical}/${symbol.coinapi}/history?time_start=${time_start}&time_end=${time_end}&limit=${nums}${isOHLCV}`;
+  const HISTORICAL_URL = `https://rest.coinapi.io/v1/${historical}/${symbol.coinapi}/history?&time_start=${time_start}&time_end=${time_end}&limit=${limit}${isOHLCV}`;
   try {
     const request = await fetch(HISTORICAL_URL, {
-      method: "GET",
+      method: 'GET',
       headers: { 'X-CoinAPI-Key': process.env.COIN_API_KEY as string }
     });
     let data: unknown = (await request.json());
-
-    return (data as T[])
+    return (data as T[]);
   } catch (e) {
     throw new Error(`[COIN_API FAILED] - Cause: ${e}`);
   }
@@ -45,24 +48,28 @@ export async function getHistoricalCoinAPIData<T>({ symbol, limit, time_start, h
 
 type CoinMarketCapInput = Pick<IHistoricalDataInput, 'symbol'>
 
-export async function getLatestCoinMarketCapCryptoQuote({ symbol }: CoinMarketCapInput): Promise<CoinMarketCapApiReturnType | undefined> {
-  const url = `${COIN_MARKET_URL}?slug=${symbol.coinmarketcap}`
+export async function getLatestCoinMarketCapCryptoQuote({ symbol }: CoinMarketCapInput): Promise<CoinMarketCapApiReturnType | undefined | Pick<CoinMarketCapResult, 'status'>> {
+  const url = `https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?slug=${symbol.coinmarketcap}`;
   try {
     const request = await fetch(url, {
-      method: "GET",
+      method: 'GET',
       headers: {
         'X-CMC_PRO_API_KEY': COIN_MARKET_CAP_KEY as string
       }
-    })
+    });
 
     let currency: unknown = await request.json();
-    if (currency) {
-      const id: string = Object.keys((currency as CoinMarketCapResult).data).toString()
-      return ((currency as CoinMarketCapResult).data[id])
-    }
 
+    // Catch error within the API
+    if (((currency as Pick<CoinMarketCapResult, 'status'>).status.error_code) === 1001) {
+      return (currency as Pick<CoinMarketCapResult, 'status'>);
+    } else {
+      const id: string = Object.keys((currency as Pick<CoinMarketCapResult, 'data'>).data).toString();
+      return ((currency as CoinMarketCapResult).data[id]);
+    }
+    // [Internal issue with the function]
   } catch (e) {
-    throw new Error(`[COIN_MARKET_CAP Failed] - Cause: ${e}`)
+    throw new Error(`[COIN_MARKET_CAP Failed] - Cause: ${e}`);
   }
 }
 
@@ -75,23 +82,28 @@ type CryptoCompareInput = Pick<IHistoricalDataInput, 'symbol' | 'time_start' | '
   aggregatePredictableTimePeriods?: string
 }
 
-export async function getHistoricalCryptoCompareOHLCVData({ symbol, limit, aggregate, time_start }: CryptoCompareInput): Promise<CryptoCompareOHLCVResult> {
+export async function getHistoricalCryptoCompareOHLCVData({
+                                                            symbol,
+                                                            limit,
+                                                            aggregate,
+                                                            time_start
+                                                          }: CryptoCompareInput): Promise<CryptoCompareOHLCVResult> {
   // convert time to unit
   const time = convertToUnixEpoch(time_start).toString();
-
-  const url = `${CRYPTO_COMPARE_URL}/data/index/histo/underlying/day?market=CCMVDA&base=${symbol.coinCompare}&quote=USD&limit=${limit}&aggregate=${aggregate}&=toTs=${time}`
+  const isAggregate = aggregate!?.length >= 1 ? `&aggregate${aggregate}` : ''
+  const url = `${CRYPTO_COMPARE_URL}/data/index/histo/underlying/day?market=CCMVDA&base=${symbol.coinCompare}&quote=USD&limit=${limit}&=toTs=${time}${isAggregate}`;
   try {
     const ohlcvData = await fetch(url, {
       headers: {
         authorization: `Apikey ${CRYPTO_COMPARE_KEY as string}`
       }
-    })
+    });
 
     const data: unknown = await ohlcvData.json();
 
-    return (data as CryptoCompareOHLCVResult)
+    return (data as CryptoCompareOHLCVResult);
   } catch (e) {
-    throw new Error(`[Crypto_Compare Failed] - Cause ${e}`)
+    throw new Error(`[Crypto_Compare Failed] - Cause ${e}`);
   }
 }
 

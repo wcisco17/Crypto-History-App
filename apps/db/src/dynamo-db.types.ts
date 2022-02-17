@@ -6,8 +6,8 @@ import {
   CoinAPIReturnHistoricalOrdersBookData,
   CoinMarketCapApiReturnType,
   USD
-} from './numerical';
-import { Article } from './text-data';
+} from './numerical.types';
+import { Article } from './text-data.types';
 
 type CryptoCurrencyInfo = Pick<CoinMarketCapApiReturnType,
   'id' |
