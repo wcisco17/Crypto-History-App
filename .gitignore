@@ -24,10 +24,14 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # local env files
+.env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
+packages/deploy-dynamodb/.env
+packages/deploy-s3/.env
+apps/db/.env
 # turbo
 .turbo
