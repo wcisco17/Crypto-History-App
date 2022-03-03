@@ -35,7 +35,11 @@ packages/deploy-s3/.env.local
 apps/db/.env.local
 
 
-packages/deploy-dynamodb/src/*.js
+packages/deploy-dynamodb/src/create-crypto.js
+packages/deploy-dynamodb/src/create-numerical.js
+packages/deploy-dynamodb/src/index.js
+packages/deploy-dynamodb/src/inquirer-util.js
+packages/deploy-dynamodb/src/create-text-data.js
 
 # turbo
 .turbo
