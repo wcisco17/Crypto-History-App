@@ -8,7 +8,7 @@ node_modules
 # testing
 coverage
 
-# next.js
+# next.jss
 .next/
 out/
 build
@@ -30,9 +30,9 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
-packages/deploy-dynamodb/.env
-packages/deploy-s3/.env
-apps/db/.env
+packages/deploy-dynamodb/.env.local
+packages/deploy-s3/.env.local
+apps/db/.env.local
 
 # turbo
 .turbo
