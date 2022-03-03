@@ -19,7 +19,7 @@ function getText(newsApiRes) {
   }
 
   let params = {
-    LanguageCode: "en",
+    LanguageCode: 'en',
     Text
   };
 
