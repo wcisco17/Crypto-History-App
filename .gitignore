@@ -33,5 +33,6 @@ yarn-error.log*
 packages/deploy-dynamodb/.env
 packages/deploy-s3/.env
 apps/db/.env
+
 # turbo
 .turbo
