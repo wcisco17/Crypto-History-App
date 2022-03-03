@@ -17,6 +17,8 @@ var dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1["default"].config();
 __exportStar(require("./src/aws-s3-client"), exports);
 __exportStar(require("./src/aws-dynamodb"), exports);
+__exportStar(require("./src/aws-lambda"), exports);
 __exportStar(require("./src/types/s3"), exports);
 __exportStar(require("./src/types/dynamo-db"), exports);
 __exportStar(require("./src/aws-cloudfront"), exports);
+__exportStar(require("./src/types/lambda"), exports);

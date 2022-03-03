@@ -44,8 +44,18 @@ type HOUR = '1HRS' | '2HRS' | '3HRS' | '4HRS' | '6HRS' | '8HRS' | '12HRS'
 type MINUTE = '1MIN' | '2MIN' | '3MIN' | '4MIN' | '5MIN' | '6MIN' | '20MIN' | '30MIN'
 
 export type TypeofHistoricalData = {
-  historical: 'orderbooks' | 'trades' | 'OHLCV'
+  historical: 'orderbooks' | 'trades' | 'OHLCV' | 'quotes'
   period_id?: DAY | MONTH | YEAR | HOUR | MINUTE
+}
+
+export interface CoinAPIReturnHistoricalQuotesData {
+  symbol_id: string;
+  time_exchange: Date;
+  time_coinapi: Date;
+  ask_price: number;
+  ask_size: number;
+  bid_price: number;
+  bid_size: number;
 }
 
 export interface CoinAPIReturnHistoricalOHLCVData {

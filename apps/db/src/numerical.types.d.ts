@@ -33,9 +33,18 @@ declare type DAY = '1DAY' | '2DAY' | '3DAY' | '5DAY' | '7DAY' | '10DAY';
 declare type HOUR = '1HRS' | '2HRS' | '3HRS' | '4HRS' | '6HRS' | '8HRS' | '12HRS';
 declare type MINUTE = '1MIN' | '2MIN' | '3MIN' | '4MIN' | '5MIN' | '6MIN' | '20MIN' | '30MIN';
 export declare type TypeofHistoricalData = {
-    historical: 'orderbooks' | 'trades' | 'OHLCV';
+    historical: 'orderbooks' | 'trades' | 'OHLCV' | 'quotes';
     period_id?: DAY | MONTH | YEAR | HOUR | MINUTE;
 };
+export interface CoinAPIReturnHistoricalQuotesData {
+    symbol_id: string;
+    time_exchange: Date;
+    time_coinapi: Date;
+    ask_price: number;
+    ask_size: number;
+    bid_price: number;
+    bid_size: number;
+}
 export interface CoinAPIReturnHistoricalOHLCVData {
     time_period_start: Date;
     time_period_end: Date;

@@ -2,6 +2,11 @@
 exports.__esModule = true;
 exports.convertToUnixEpoch = void 0;
 var convertToUnixEpoch = function (input) {
-    return Math.floor(new Date(input).getTime() / 1000.0);
+    var result = Math.floor(new Date(input).getTime() / 1000.0);
+    if (isNaN(result)) {
+        throw new Error("Invalid Date Format");
+    }
+    else
+        return result;
 };
 exports.convertToUnixEpoch = convertToUnixEpoch;

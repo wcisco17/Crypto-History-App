@@ -42,35 +42,42 @@ exports.__esModule = true;
 exports.getHistoricalCryptoCompareOHLCVData = exports.getLatestCoinMarketCapCryptoQuote = exports.getHistoricalCoinAPIData = void 0;
 var constant_js_1 = require("./constant.js");
 var cross_fetch_1 = __importDefault(require("cross-fetch"));
-var util_js_1 = require("./util.js");
 var dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1["default"].config();
 function getHistoricalCoinAPIData(_a) {
+    var _b;
     var symbol = _a.symbol, limit = _a.limit, time_start = _a.time_start, historical = _a.historical, time_end = _a.time_end, period_id = _a.period_id;
     return __awaiter(this, void 0, void 0, function () {
-        var isOHLCV, HISTORICAL_URL, request, data, e_1;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+        var HISTORICAL_URL, request, data, data_1, e_1;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
                 case 0:
-                    isOHLCV = historical == 'OHLCV' ? "&period_id=".concat(period_id) : '';
-                    HISTORICAL_URL = "https://rest.coinapi.io/v1/".concat(historical, "/").concat(symbol.coinapi, "/history?&time_start=").concat(time_start, "&time_end=").concat(time_end, "&limit=").concat(limit).concat(isOHLCV);
-                    _b.label = 1;
+                    HISTORICAL_URL = "https://rest.coinapi.io/v1/".concat(historical, "/").concat(symbol.coinapi, "/history?time_start=").concat(time_start, "&limit=").concat(limit);
+                    _c.label = 1;
                 case 1:
-                    _b.trys.push([1, 4, , 5]);
+                    _c.trys.push([1, 6, , 7]);
                     return [4 /*yield*/, (0, cross_fetch_1["default"])(HISTORICAL_URL, {
                             method: 'GET',
-                            headers: { 'X-CoinAPI-Key': process.env.COIN_API_KEY }
+                            headers: { 'X-CoinAPI-Key': constant_js_1.COIN_API_KEY }
                         })];
                 case 2:
-                    request = _b.sent();
-                    return [4 /*yield*/, request.json()];
-                case 3:
-                    data = (_b.sent());
+                    request = _c.sent();
+                    data = void 0;
+                    if (!(request.status === 500)) return [3 /*break*/, 3];
+                    data = { error: request.statusText };
                     return [2 /*return*/, data];
+                case 3: return [4 /*yield*/, request.json()];
                 case 4:
-                    e_1 = _b.sent();
+                    data_1 = (_c.sent());
+                    if (((_b = data_1.error) === null || _b === void 0 ? void 0 : _b.length) >= 1) {
+                        data_1 = { error: data_1.error };
+                    }
+                    return [2 /*return*/, data_1];
+                case 5: return [3 /*break*/, 7];
+                case 6:
+                    e_1 = _c.sent();
                     throw new Error("[COIN_API FAILED] - Cause: ".concat(e_1));
-                case 5: return [2 /*return*/];
+                case 7: return [2 /*return*/];
             }
         });
     });
@@ -120,13 +127,12 @@ function getHistoricalCryptoCompareOHLCVData(_a) {
     var _b;
     var symbol = _a.symbol, limit = _a.limit, aggregate = _a.aggregate, time_start = _a.time_start;
     return __awaiter(this, void 0, void 0, function () {
-        var time, isAggregate, url, ohlcvData, data, e_3;
+        var isAggregate, url, ohlcvData, data, e_3;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
-                    time = (0, util_js_1.convertToUnixEpoch)(time_start).toString();
                     isAggregate = ((_b = aggregate) === null || _b === void 0 ? void 0 : _b.length) >= 1 ? "&aggregate".concat(aggregate) : '';
-                    url = "".concat(constant_js_1.CRYPTO_COMPARE_URL, "/data/index/histo/underlying/day?market=CCMVDA&base=").concat(symbol.coinCompare, "&quote=USD&limit=").concat(limit, "&=toTs=").concat(time).concat(isAggregate);
+                    url = "".concat(constant_js_1.CRYPTO_COMPARE_URL, "/data/index/histo/underlying/day?market=CCMVDA&base=").concat(symbol.coinCompare, "&quote=USD&limit=").concat(limit, "&=toTs=").concat(time_start).concat(isAggregate);
                     _c.label = 1;
                 case 1:
                     _c.trys.push([1, 4, , 5]);
