@@ -34,6 +34,10 @@ import { createTextData } from './create-text-data.js';
       actions: writeTypes
     });
 
+    let pickCoins: S1FullCryptoName[] = [
+      'bitcoin', 'xrp', 'dogecoin', 'ethereum', 'bch', 'polygon', 'tether'
+    ];
+
     /***
      * @type S1FullCryptoName
      * - go to type {S1FullCryptoName} to add more coins we can make it more generic later.
@@ -44,7 +48,7 @@ import { createTextData } from './create-text-data.js';
       const coinName: string = await createCommands({
         type: 'list',
         message: 'For which Coin?',
-        actions: ['bitcoin', 'xrp', 'dogecoin', 'ethereum'] as S1FullCryptoName[]
+        actions: pickCoins
       });
 
       return createCryptoItem(client, (coinName as S1FullCryptoName));
@@ -55,7 +59,7 @@ import { createTextData } from './create-text-data.js';
       const coinName: S1FullCryptoName = await createCommands({
         type: 'list',
         message: 'For which Coin?',
-        actions: ['bitcoin', 'xrp', 'dogecoin', 'ethereum'] as S1FullCryptoName[]
+        actions: [...pickCoins]
       });
 
       let coinApi: S2FullCryptoName;
@@ -78,13 +82,23 @@ import { createTextData } from './create-text-data.js';
           coinApi = 'BITSTAMP_SPOT_ETH_USD';
           coinCompare = 'ETH';
           break;
+
+        case 'bch':
+          coinApi = 'BITSTAMP_SPOT_BCH_USD';
+          coinCompare = 'BCH';
+          break;
+        case 'polygon':
+          coinApi = 'BITSTAMP_SPOT_POLYGON_USD';
+          coinCompare = 'POLYGON';
+          break;
       }
 
-      const amount: string = await createCommands({
+      let amount: string | number = await createCommands({
         type: 'input',
         message: 'How many would you like to PUT? [condition: every number is added per hour]'
       });
 
+      // 2022-03-07T09:30:00.fffffff
       const date: string = await createCommands({
         type: 'input',
         message: 'Which date would you like to PULL your data from? [REQUIRED FORMAT: yyyy-MM-ddTHH:mm:ss.fffffff]'
@@ -95,44 +109,67 @@ import { createTextData } from './create-text-data.js';
         message: 'Which hour should we start from?'
       });
 
-      for (let hourIdx = 0; hourIdx < Number(amount); hourIdx++) {
-        let hourText: unknown;
-        let newHour: number = Number(hour) + (hourIdx);
+      let hourIdx = 0;
+      amount = Number(amount);
 
-        if (newHour < 10) hourText = `0${newHour}`;
-        else if (hourIdx >= 10) hourText = `${newHour}`;
+      let min: number = 10;
+      let endMin: number = 60;
 
-        const time = `${date}T${hourText}:30:00`;
+      while (hourIdx < amount && min < endMin) {
+        let time: string;
+
+        let minText: string;
+        let hourText: string;
+        let currentTime: number = Number(hour) + hourIdx;
+
+        if (currentTime < 10) hourText = `0${currentTime}`;
+        else if (currentTime >= 10) hourText = `${currentTime}`;
+
+        if (min < 10) minText = `0${min}`;
+        else if (min >= 10) minText = `${min}`;
+
+        time = `${date}T${hourText}:${minText}:00`;
+
         const convertTime = convertToUnixEpoch(time);
 
-        const numerical = await createNumerical({
-            client,
-            coinName,
-            coinapi: coinApi,
-            coinCompare,
-            limit: amount,
-            time,
-            hour: (hour as string),
-            convertTime
-          }
-        );
+        // const numerical = await createNumerical({
+        //     client,
+        //     coinName,
+        //     coinapi: coinApi,
+        //     coinCompare,
+        //     limit: (amount.toString() as string),
+        //     time,
+        //     hour: (hour as string),
+        //     convertTime
+        //   }
+        // );
 
         const text_data = await createTextData(
-          client, coinName, amount, date, (hour as string), convertTime, coinCompare
+          client,
+          coinName,
+          (amount.toString() as string),
+          date,
+          (hour as string),
+          convertTime,
+          coinCompare
         );
 
-        Promise.all([numerical, text_data]).then(([numerical, textResult]) => {
+        Promise.all([text_data]).then(([data]) => {
           console.log(
             `${hourIdx} Successfully added both [numericalResult & testResult] with dates: ${time}`
           );
-        });
+        }).catch(console.log);
+
+        min++;
+
+        if (min == endMin) {
+          min = 0;
+          hourIdx++;
+        }
       }
     }
-
   }
 })();
-
-
 
 
 

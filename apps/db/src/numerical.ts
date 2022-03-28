@@ -19,13 +19,13 @@ dotenv.config();
 type CoinApiInput = IHistoricalDataInput & TypeofHistoricalData
 
 export async function getHistoricalCoinAPIData<T>({
-                                                    symbol,
-                                                    limit,
-                                                    time_start,
-                                                    historical,
-                                                    time_end,
-                                                    period_id
-                                                  }: CoinApiInput): Promise<T[] | { error: string }> {
+  symbol,
+  limit,
+  time_start,
+  historical,
+  time_end,
+  period_id
+}: CoinApiInput): Promise<T[] | { error: string }> {
 
   const HISTORICAL_URL = `https://rest.coinapi.io/v1/${historical}/${symbol.coinapi}/history?time_start=${time_start}&limit=${limit}`;
   try {
@@ -38,12 +38,13 @@ export async function getHistoricalCoinAPIData<T>({
 
     if (request.status === 500) {
       data = { error: request.statusText };
+      console.log(request);
       return data;
     } else {
+
       let data: unknown = (await request.json());
-      if ((data as { error: string }).error?.length >= 1) {
-        data = { error: (data as { error: string }).error }
-      }
+      if ((data as { error: string }).error?.length >= 1)
+        data = { error: (data as { error: string }).error };
 
       return (data as T[]);
     }
@@ -65,7 +66,7 @@ export async function getLatestCoinMarketCapCryptoQuote({ symbol }: CoinMarketCa
     const request = await fetch(url, {
       method: 'GET',
       headers: {
-        'X-CMC_PRO_API_KEY': COIN_MARKET_CAP_KEY as string
+        'X-CMC_PRO_API_KEY': process.env.COIN_MARKET_CAP_KEY as string
       }
     });
 
@@ -94,11 +95,11 @@ type CryptoCompareInput = Pick<IHistoricalDataInput, 'symbol' | 'time_start' | '
 }
 
 export async function getHistoricalCryptoCompareOHLCVData({
-                                                            symbol,
-                                                            limit,
-                                                            aggregate,
-                                                            time_start
-                                                          }: CryptoCompareInput): Promise<CryptoCompareOHLCVResult> {
+  symbol,
+  limit,
+  aggregate,
+  time_start
+}: CryptoCompareInput): Promise<CryptoCompareOHLCVResult> {
   // convert time to unit
   const isAggregate = aggregate!?.length >= 1 ? `&aggregate${aggregate}` : '';
   const url = `${CRYPTO_COMPARE_URL}/data/index/histo/underlying/day?market=CCMVDA&base=${symbol.coinCompare}&quote=USD&limit=${limit}&=toTs=${time_start}${isAggregate}`;
@@ -116,9 +117,6 @@ export async function getHistoricalCryptoCompareOHLCVData({
     throw new Error(`[Crypto_Compare Failed] - Cause ${e}`);
   }
 }
-
-
-
 
 
 

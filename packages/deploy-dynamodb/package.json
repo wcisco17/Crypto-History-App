@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "swc src/*.ts -d dist",
-    "dev": "node dist/src/index.js",
+    "dev": "node dist/index.js",
     "clean": "rm -rf dist && rm -rf node_modules"
   },
   "keywords": [],

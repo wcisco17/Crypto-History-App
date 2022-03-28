@@ -5,7 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev:local": "node dist/index.js",
+    "dev:web": "node dist/deploy-web.js",
+    "dev:data": "node dist/deploy-syntheticdata.js",
     "build": "swc src/*.ts -d dist --config-file .swcrc",
     "dev": "swc src/*.ts -d dist --config-file .swcrc",
     "clean": "rm -rf dist && rm -rf node_modules",
@@ -26,6 +27,7 @@
     "@crypto-aws/client": "workspace:*",
     "dotenv": "^14.2.0",
     "mime-types": "^2.1.34",
+    "node-fetch": "^3.2.0",
     "regenerator-runtime": "^0.13.9"
   }
 }

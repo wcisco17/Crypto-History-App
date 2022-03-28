@@ -34,7 +34,6 @@ packages/deploy-dynamodb/.env.local
 packages/deploy-s3/.env.local
 apps/db/.env.local
 
-
 packages/deploy-dynamodb/src/create-crypto.js
 packages/deploy-dynamodb/src/create-numerical.js
 packages/deploy-dynamodb/src/index.js

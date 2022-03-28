@@ -18,6 +18,7 @@ export async function createNumerical({
   hour,
   convertTime
 }: ICreateNumerical) {
+
   const orderbooks: CoinAPIReturnHistoricalQuotesData[] | { error: string } = await getHistoricalCoinAPIData({
     limit,
     time_start: time,
@@ -25,11 +26,9 @@ export async function createNumerical({
     symbol: { coinapi },
     historical: 'quotes'
   });
-
   if ((orderbooks as { error: string }).error?.length >= 1) throw Error(`[orderbooks] ${(orderbooks as { error: string }).error}`);
   else
-    Promise.all(
-      (orderbooks as CoinAPIReturnHistoricalQuotesData[]).map(async orderbook => {
+    (orderbooks as CoinAPIReturnHistoricalQuotesData[]).map(async orderbook => {
         await client.send(new PutItemCommand({
           TableName: 'CryptoOrderBooks',
           Item: {
@@ -42,7 +41,7 @@ export async function createNumerical({
             DataType: { S: 'orderbooks' }
           }
         }));
-      })
+      }
     );
 
   const ohlcvCryptoCompare = await getHistoricalCryptoCompareOHLCVData({
@@ -54,22 +53,21 @@ export async function createNumerical({
   else
     // Get OHLCV Data from Crypto Compare
   {
-    Promise.all(
-      ohlcvCryptoCompare.Data.map(async coin => {
-        await client.send(new PutItemCommand({
-            TableName: 'CryptoPrices',
-            Item: {
-              CryptoSymbolID: { S: coinName },
-              PriceTimeStamp: { N: convertTime.toString() },
-              TimeStamp: { N: coin.time.toString() },
-              Close: { N: coin.close.toString() },
-              High: { N: coin.high.toString() },
-              Low: { N: coin.low.toString() },
-              Open: { N: coin.open.toString() },
-              DataType: { S: 'ohlcv' }
-            }
-          })
-        );
-      }));
+    ohlcvCryptoCompare.Data.map(async coin => {
+      await client.send(new PutItemCommand({
+          TableName: 'CryptoPrices',
+          Item: {
+            CryptoSymbolID: { S: coinName },
+            PriceTimeStamp: { N: convertTime.toString() },
+            TimeStamp: { N: coin.time.toString() },
+            Close: { N: coin.close.toString() },
+            High: { N: coin.high.toString() },
+            Low: { N: coin.low.toString() },
+            Open: { N: coin.open.toString() },
+            DataType: { S: 'ohlcv' }
+          }
+        })
+      );
+    });
   }
 }

@@ -4,8 +4,8 @@
     "parser": {
       "syntax": "typescript",
       "tsx": false,
-      "target": "es2016",
-      "dynamicImport": false
+      "dynamicImport": false,
+      "decorators": true
     }
   }
 }

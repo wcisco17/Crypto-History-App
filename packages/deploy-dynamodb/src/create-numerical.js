@@ -59,7 +59,7 @@ function createNumerical(_a) {
                     if (((_b = orderbooks.error) === null || _b === void 0 ? void 0 : _b.length) >= 1)
                         throw Error("[orderbooks] ".concat(orderbooks.error));
                     else
-                        Promise.all(orderbooks.map(function (orderbook) { return __awaiter(_this, void 0, void 0, function () {
+                        orderbooks.map(function (orderbook) { return __awaiter(_this, void 0, void 0, function () {
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
                                     case 0: return [4 /*yield*/, client.send(new client_1.PutItemCommand({
@@ -79,7 +79,7 @@ function createNumerical(_a) {
                                         return [2 /*return*/];
                                 }
                             });
-                        }); }));
+                        }); });
                     return [4 /*yield*/, (0, db_1.getHistoricalCryptoCompareOHLCVData)({
                             limit: limit,
                             time_start: convertTime.toString(),
@@ -92,7 +92,7 @@ function createNumerical(_a) {
                     else 
                     // Get OHLCV Data from Crypto Compare
                     {
-                        Promise.all(ohlcvCryptoCompare.Data.map(function (coin) { return __awaiter(_this, void 0, void 0, function () {
+                        ohlcvCryptoCompare.Data.map(function (coin) { return __awaiter(_this, void 0, void 0, function () {
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
                                     case 0: return [4 /*yield*/, client.send(new client_1.PutItemCommand({
@@ -113,7 +113,7 @@ function createNumerical(_a) {
                                         return [2 /*return*/];
                                 }
                             });
-                        }); }));
+                        }); });
                     }
                     return [2 /*return*/];
             }

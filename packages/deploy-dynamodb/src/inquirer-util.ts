@@ -36,3 +36,4 @@ export async function createCommands({ actions, message, type, name }: ICreateCo
 
   return selectCommand;
 }
+

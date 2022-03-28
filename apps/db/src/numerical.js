@@ -65,13 +65,13 @@ function getHistoricalCoinAPIData(_a) {
                     data = void 0;
                     if (!(request.status === 500)) return [3 /*break*/, 3];
                     data = { error: request.statusText };
+                    console.log(request);
                     return [2 /*return*/, data];
                 case 3: return [4 /*yield*/, request.json()];
                 case 4:
                     data_1 = (_c.sent());
-                    if (((_b = data_1.error) === null || _b === void 0 ? void 0 : _b.length) >= 1) {
+                    if (((_b = data_1.error) === null || _b === void 0 ? void 0 : _b.length) >= 1)
                         data_1 = { error: data_1.error };
-                    }
                     return [2 /*return*/, data_1];
                 case 5: return [3 /*break*/, 7];
                 case 6:
@@ -97,7 +97,7 @@ function getLatestCoinMarketCapCryptoQuote(_a) {
                     return [4 /*yield*/, (0, cross_fetch_1["default"])(url, {
                             method: 'GET',
                             headers: {
-                                'X-CMC_PRO_API_KEY': constant_js_1.COIN_MARKET_CAP_KEY
+                                'X-CMC_PRO_API_KEY': process.env.COIN_MARKET_CAP_KEY
                             }
                         })];
                 case 2:

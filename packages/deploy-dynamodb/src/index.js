@@ -35,15 +35,23 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 exports.__esModule = true;
 var client_1 = require("@crypto-aws/client");
 var create_crypto_js_1 = require("./create-crypto.js");
 var inquirer_util_js_1 = require("./inquirer-util.js");
-var create_numerical_js_1 = require("./create-numerical.js");
 var util_js_1 = require("@crypto-api/db/src/util.js");
 var create_text_data_js_1 = require("./create-text-data.js");
 (function () { return __awaiter(void 0, void 0, void 0, function () {
-    var commandActions, client, initCommands, writeTypes, typesOfWrite, coinName, coinName, coinApi, coinCompare, amount, date, hour, _loop_1, hourIdx;
+    var commandActions, client, initCommands, writeTypes, typesOfWrite, pickCoins, coinName, coinName, coinApi, coinCompare, amount, date, hour, hourIdx_1, min, endMin, _loop_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -58,7 +66,7 @@ var create_text_data_js_1 = require("./create-text-data.js");
                     })];
             case 2:
                 initCommands = _a.sent();
-                if (!initCommands.includes('write')) return [3 /*break*/, 13];
+                if (!initCommands.includes('write')) return [3 /*break*/, 12];
                 writeTypes = Object.values(inquirer_util_js_1.TypesOfWrite);
                 return [4 /*yield*/, (0, inquirer_util_js_1.createCommands)({
                         type: 'list',
@@ -67,21 +75,24 @@ var create_text_data_js_1 = require("./create-text-data.js");
                     })];
             case 3:
                 typesOfWrite = _a.sent();
+                pickCoins = [
+                    'bitcoin', 'xrp', 'dogecoin', 'ethereum', 'bch', 'polygon', 'tether'
+                ];
                 if (!typesOfWrite.includes('new-coin')) return [3 /*break*/, 5];
                 return [4 /*yield*/, (0, inquirer_util_js_1.createCommands)({
                         type: 'list',
                         message: 'For which Coin?',
-                        actions: ['bitcoin', 'xrp', 'dogecoin', 'ethereum']
+                        actions: pickCoins
                     })];
             case 4:
                 coinName = _a.sent();
                 return [2 /*return*/, (0, create_crypto_js_1.createCryptoItem)(client, coinName)];
             case 5:
-                if (!typesOfWrite.includes('time-stamp')) return [3 /*break*/, 13];
+                if (!typesOfWrite.includes('time-stamp')) return [3 /*break*/, 12];
                 return [4 /*yield*/, (0, inquirer_util_js_1.createCommands)({
                         type: 'list',
                         message: 'For which Coin?',
-                        actions: ['bitcoin', 'xrp', 'dogecoin', 'ethereum']
+                        actions: __spreadArray([], pickCoins, true)
                     })];
             case 6:
                 coinName = _a.sent();
@@ -104,6 +115,14 @@ var create_text_data_js_1 = require("./create-text-data.js");
                         coinApi = 'BITSTAMP_SPOT_ETH_USD';
                         coinCompare = 'ETH';
                         break;
+                    case 'bch':
+                        coinApi = 'BITSTAMP_SPOT_BCH_USD';
+                        coinCompare = 'BCH';
+                        break;
+                    case 'polygon':
+                        coinApi = 'BITSTAMP_SPOT_POLYGON_USD';
+                        coinCompare = 'POLYGON';
+                        break;
                 }
                 return [4 /*yield*/, (0, inquirer_util_js_1.createCommands)({
                         type: 'input',
@@ -123,54 +142,52 @@ var create_text_data_js_1 = require("./create-text-data.js");
                     })];
             case 9:
                 hour = _a.sent();
-                _loop_1 = function (hourIdx) {
-                    var hourText, newHour, time, convertTime, numerical, text_data;
+                hourIdx_1 = 0;
+                amount = Number(amount);
+                min = 10;
+                endMin = 60;
+                _loop_1 = function () {
+                    var time, minText, hourText, currentTime, convertTime, text_data;
                     return __generator(this, function (_b) {
                         switch (_b.label) {
                             case 0:
+                                minText = void 0;
                                 hourText = void 0;
-                                newHour = Number(hour) + (hourIdx);
-                                if (newHour < 10)
-                                    hourText = "0".concat(newHour);
-                                else if (hourIdx >= 10)
-                                    hourText = "".concat(newHour);
-                                time = "".concat(date, "T").concat(hourText, ":30:00");
+                                currentTime = Number(hour) + hourIdx_1;
+                                if (currentTime < 10)
+                                    hourText = "0".concat(currentTime);
+                                else if (currentTime >= 10)
+                                    hourText = "".concat(currentTime);
+                                if (min < 10)
+                                    minText = "0".concat(min);
+                                else if (min >= 10)
+                                    minText = "".concat(min);
+                                time = "".concat(date, "T").concat(hourText, ":").concat(minText, ":00");
                                 convertTime = (0, util_js_1.convertToUnixEpoch)(time);
-                                return [4 /*yield*/, (0, create_numerical_js_1.createNumerical)({
-                                        client: client,
-                                        coinName: coinName,
-                                        coinapi: coinApi,
-                                        coinCompare: coinCompare,
-                                        limit: amount,
-                                        time: time,
-                                        hour: hour,
-                                        convertTime: convertTime
-                                    })];
+                                return [4 /*yield*/, (0, create_text_data_js_1.createTextData)(client, coinName, amount.toString(), date, hour, convertTime, coinCompare)];
                             case 1:
-                                numerical = _b.sent();
-                                return [4 /*yield*/, (0, create_text_data_js_1.createTextData)(client, coinName, amount, date, hour, convertTime, coinCompare)];
-                            case 2:
                                 text_data = _b.sent();
-                                Promise.all([numerical, text_data]).then(function (_a) {
-                                    var numerical = _a[0], textResult = _a[1];
-                                    console.log("".concat(hourIdx, " Successfully added both [numericalResult & testResult] with dates: ").concat(time));
-                                });
+                                Promise.all([text_data]).then(function (_a) {
+                                    var data = _a[0];
+                                    console.log("".concat(hourIdx_1, " Successfully added both [numericalResult & testResult] with dates: ").concat(time));
+                                })["catch"](console.log);
+                                min++;
+                                if (min == endMin) {
+                                    min = 0;
+                                    hourIdx_1++;
+                                }
                                 return [2 /*return*/];
                         }
                     });
                 };
-                hourIdx = 0;
                 _a.label = 10;
             case 10:
-                if (!(hourIdx < Number(amount))) return [3 /*break*/, 13];
-                return [5 /*yield**/, _loop_1(hourIdx)];
+                if (!(hourIdx_1 < amount && min < endMin)) return [3 /*break*/, 12];
+                return [5 /*yield**/, _loop_1()];
             case 11:
                 _a.sent();
-                _a.label = 12;
-            case 12:
-                hourIdx++;
                 return [3 /*break*/, 10];
-            case 13: return [2 /*return*/];
+            case 12: return [2 /*return*/];
         }
     });
 }); })();
