@@ -1,28 +1,17 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import { format } from 'd3-format';
 import { timeFormat } from 'd3-time-format';
 
-import { ChartCanvas, Chart } from 'react-stockcharts';
-import {
-  BarSeries,
-  CandlestickSeries
-} from 'react-stockcharts/lib/series';
+import { Chart, ChartCanvas, ZoomButtons } from 'react-stockcharts';
+import { CandlestickSeries, LineSeries, ScatterSeries, SquareMarker } from 'react-stockcharts/lib/series';
 import { XAxis, YAxis } from 'react-stockcharts/lib/axes';
-import {
-  CrossHairCursor,
-  EdgeIndicator,
-  CurrentCoordinate,
-  MouseCoordinateX,
-  MouseCoordinateY
-} from 'react-stockcharts/lib/coordinates';
+import { CrossHairCursor, MouseCoordinateX, MouseCoordinateY } from 'react-stockcharts/lib/coordinates';
 
 import { discontinuousTimeScaleProvider } from 'react-stockcharts/lib/scale';
 import { OHLCTooltip } from 'react-stockcharts/lib/tooltip';
 import { fitWidth } from 'react-stockcharts/lib/helper';
 import { last } from 'react-stockcharts/lib/utils';
-import { config } from '../../utils/theme';
 
 type ICandleStickProps = {
   type: string
@@ -32,11 +21,56 @@ type ICandleStickProps = {
 }
 
 class CandleStickChartForDiscontinuousIntraDay extends React.Component<ICandleStickProps> {
+  state = {
+    suffix: 0
+  };
+
+  constructor(props: any) {
+    super(props);
+    this.saveNode = this.saveNode.bind(this);
+    this.resetYDomain = this.resetYDomain.bind(this);
+    this.handleReset = this.handleReset.bind(this);
+  }
+
+  // eslint-disable-next-line react/no-deprecated
+  componentWillMount() {
+    this.setState({
+      suffix: 1
+    });
+  }
+
+  saveNode(node: any) {
+    ((this as any).node) = node;
+  }
+
+  resetYDomain() {
+    (this as any).node.resetYDomain();
+  }
+
+  handleReset() {
+    this.setState({
+      suffix: this.state.suffix + 1
+    });
+  }
+
   render() {
-    const { data: initialData, width, ratio } = this.props;
+
+    const { type, width, ratio } = this.props;
+    const CandleStickChartWithZoomPan = {
+      type: 'svg',
+      mouseMoveEvent: true,
+      panEvent: true,
+      zoomEvent: true,
+      clamp: false
+    };
+
+    const { mouseMoveEvent, panEvent, zoomEvent, clamp } = CandleStickChartWithZoomPan;
+
+    const { data: initialData } = this.props;
 
     const xScaleProvider = discontinuousTimeScaleProvider
       .inputDateAccessor((d: any) => d.date);
+
     const {
       data,
       xScale,
@@ -45,63 +79,97 @@ class CandleStickChartForDiscontinuousIntraDay extends React.Component<ICandleSt
     } = xScaleProvider(initialData);
 
     const start = xAccessor(last(data));
-    const end = xAccessor(data[Math.max(0, data.length - 150)]);
+    const end = xAccessor(data[Math.max(0, data.length - 500)]);
     const xExtents = [start, end];
+
+    const margin = { left: 70, right: 70, top: 20, bottom: 30 };
+
+    const height = 400;
+
+    const gridHeight = height - margin.top - margin.bottom;
+    const gridWidth = width - margin.left - margin.right;
+
+    const showGrid = true;
+    const yGrid = showGrid ? { innerTickSize: -1 * gridWidth, tickStrokeOpacity: 0.2 } : {};
+    const xGrid = showGrid ? { innerTickSize: -1 * gridHeight, tickStrokeOpacity: 0.2 } : {};
 
     return (
       <ChartCanvas
-        height={600}
+        ref={this.saveNode} height={500}
         ratio={ratio}
         width={width}
-        margin={{ left: 80, right: 80, top: 10, bottom: 30 }}
-        type={'svg'}
-        seriesName="MSFT"
+        margin={{ left: 70, right: 70, top: 10, bottom: 30 }}
+
+        mouseMoveEvent={mouseMoveEvent}
+        panEvent={panEvent}
+        zoomEvent={zoomEvent}
+        clamp={clamp}
+        type={type}
+        seriesName={`_${this.state.suffix}`}
         data={data}
         xScale={xScale}
+        xExtents={xExtents}
         xAccessor={xAccessor}
         displayXAccessor={displayXAccessor}
-        xExtents={xExtents}
       >
-        <Chart id={2}
-               yExtents={[(d: any) => d.volume]}
-               height={150} origin={(w: any, h: any) => [0, h - 150]}
+
+        <Chart
+          id={1}
+          yExtents={[(d: any) => [d.high, d.low]]}
+          padding={{ top: 10, bottom: 20 }}
         >
-          <YAxis axisAt="left" orient="left" ticks={5} tickFormat={format('.2s')} />
+          <XAxis axisAt="bottom"
+                 orient="bottom"
+                 zoomEnabled={zoomEvent}
+                 {...xGrid} />
+          <YAxis axisAt="right"
+                 orient="right"
+                 ticks={5}
+                 zoomEnabled={zoomEvent}
+                 {...yGrid}
+          />
+          <XAxis axisAt="top" orient="top" flexTicks />
+          <CandlestickSeries />
 
-          <MouseCoordinateY
-            at="left"
-            orient="left"
-            displayFormat={format('.4s')} />
-
-          <BarSeries yAccessor={(d: any) => d.volume} fill={(d: any) => d.close > d.open ? config.colors.brand.positive : config.colors.brand.negative} />
-
-          <CurrentCoordinate yAccessor={(d: any) => d.volume} fill="#9B0A47" />
-
-          <EdgeIndicator itemType="last" orient="right" edgeAt="right"
-                         yAccessor={(d: any) => d.volume} displayFormat={format('.4s')} fill="#0F0F0F" />
-        </Chart>
-        <Chart id={1}
-               yExtents={[(d: any) => [d.high, d.low]]}
-               padding={{ top: 40, bottom: 20 }}
-        >
-          <XAxis axisAt="bottom" orient="bottom" />
-          <YAxis axisAt="right" orient="right" ticks={5} />
-
-          <MouseCoordinateX
-            rectWidth={60}
-            at="bottom"
-            orient="bottom"
-            displayFormat={timeFormat('%H:%M:%S')} />
           <MouseCoordinateY
             at="right"
             orient="right"
             displayFormat={format('.2f')} />
 
           <CandlestickSeries />
-          <EdgeIndicator itemType="last" orient="right" edgeAt="right"
-                         yAccessor={(d: any) => d.close} fill={(d: any) => d.close > d.open ? config.colors.brand.positive : config.colors.brand.negative} />
+          <OHLCTooltip origin={[-40, 0]} />
 
-          <OHLCTooltip origin={[-40, 0]} xDisplayFormat={timeFormat('%Y-%m-%d %H:%M:%S')} />
+          <ZoomButtons
+            onReset={this.handleReset}
+          />
+        </Chart>
+
+        <Chart id={2}
+               yExtents={(d: any) => [d.predictedData.mean]}>
+          {/*<XAxis axisAt="bottom" orient="bottom" />*/}
+          {/*<YAxis*/}
+          {/*  axisAt="right"*/}
+          {/*  orient="right"*/}
+          {/*  ticks={5}*/}
+          {/*/>*/}
+          <MouseCoordinateX
+            at="bottom"
+            orient="bottom"
+            displayFormat={timeFormat('%Y-%m-%d')} />
+          <MouseCoordinateY
+            at="right"
+            orient="right"
+            displayFormat={format('.2f')} />
+
+          <LineSeries
+            yAccessor={(d: any) => d.predictedData.mean}
+            stroke="#ff7f0e"
+            strokeDasharray="Dot" />
+          <ScatterSeries
+            yAccessor={(d: any) => d.predictedData.mean}
+            marker={SquareMarker}
+            markerProps={{ width: 6, stroke: '#ff7f0e', fill: '#ff7f0e' }} />
+          <OHLCTooltip forChart={1} origin={[-40, 0]} />
         </Chart>
         <CrossHairCursor />
       </ChartCanvas>

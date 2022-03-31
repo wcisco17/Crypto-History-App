@@ -22,12 +22,16 @@ function parseData(parse: any) {
 export function getData() {
   const promiseIntraDayDiscontinuous = fetch('https://cdn.rawgit.com/rrag/react-stockcharts/master/docs/data/MSFT_INTRA_DAY.tsv')
     .then(response => response.text())
-    .then(data => tsvParse(data, parseData((d: any) => new Date(+d))));
+    .then(data => {
+        return tsvParse(data, parseData((d: any) => new Date(+d)));
+      }
+    );
+  promiseIntraDayDiscontinuous.then(res => console.log(res))
   return promiseIntraDayDiscontinuous;
 }
 
 export function getDataBar() {
-  const promiseBarData = fetch("https://cdn.rawgit.com/rrag/react-stockcharts/master/docs/data/barData.json")
+  const promiseBarData = fetch('https://cdn.rawgit.com/rrag/react-stockcharts/master/docs/data/barData.json')
     .then(response => response.json());
   return promiseBarData;
 }

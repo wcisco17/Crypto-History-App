@@ -5,32 +5,29 @@ import mime from 'mime-types';
 
 const isDir = (dir: string) => lstatSync(dir).isDirectory();
 
-type Directory = 'public' | 'server' | 'out' | 'build' | 'dist'
+type Directory = 'public' | 'server' | 'out' | 'build' | 'dist' | ''
 
-export function uploadS3Files(fileName: string, dir: Directory, AWS_S3_BUCKET: string) {
-  const buildStructure: PutObjectCommandInput[] = [];
-  readdirSync(fileName).map((pb, j) => {
+export function uploadS3Files(fileName: string, dir: Directory, AWS_S3_BUCKET: string, buildStructure: PutObjectCommandInput[]): PutObjectCommandInput[] {
+  readdirSync(fileName).map((pb) => {
     const pubDir = path.join(fileName, pb);
     if (isDir(pubDir)) {
-      uploadS3Files(path.join(pubDir), dir, AWS_S3_BUCKET); // recursively get all the files ignoring the directory
+      uploadS3Files(path.join(pubDir), 'out', AWS_S3_BUCKET, buildStructure); // recursively get all the files ignoring the directory
     } else {
-      try {
-        const allFiles = readFileSync(pubDir, 'utf8');
-        const mainDir = pubDir.match(dir);
-        // @ts-ignore
-        const bucketS3Path = pubDir.substring(mainDir.index).replace(`${mainDir[0]}/`, '');
+      const allFiles = readFileSync(pubDir, 'utf8');
+      const mainDir = pubDir.match(dir);
 
-        buildStructure.push({
-          Bucket: AWS_S3_BUCKET,
-          Key: `${bucketS3Path}`,
-          Body: allFiles,
-          ContentType: mime.lookup(bucketS3Path)
-        } as PutObjectCommandInput);
-      } catch (e) {
-        console.error(`Error reading file, process terminated (Reason): ${e}`);
-        throw e;
-      }
+      const bucketS3Path = pubDir.substring(mainDir!.index!).replace(
+        `${mainDir![0]}/`, ''
+      );
+
+      buildStructure.push({
+        Bucket: AWS_S3_BUCKET,
+        Key: `${bucketS3Path}`,
+        Body: allFiles,
+        ContentType: mime.lookup(bucketS3Path)
+      } as PutObjectCommandInput);
     }
   });
+
   return buildStructure;
 }

@@ -1,6 +1,8 @@
 import { Box, Flex, Table, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
 import { TypeChooser } from 'react-stockcharts/lib/helper';
 import ChartHorizontal from './charts/ChartHorizontal';
+import { NewsAPI, SentimentAnalysi } from '../utils/global.types';
+import moment from 'moment';
 
 type ICryptoTextData = {
   stylesEl: {
@@ -10,17 +12,20 @@ type ICryptoTextData = {
       textColor: string;
     }
   }
-  data: any
   crypto: string
+  newsAPI: NewsAPI[];
+  sentimentAnalysis: SentimentAnalysi[]
 }
 
-const CryptoTextData = ({ stylesEl, data: barData, crypto }: ICryptoTextData) => {
+const CryptoTextData = ({ stylesEl, crypto, newsAPI, sentimentAnalysis }: ICryptoTextData) => {
   return (
     <Flex>
       <Box
         borderColor={stylesEl.current.borderColor}
         borderWidth={2}
         py={'6'}
+        height={'700px'}
+        overflow={'auto'}
         px={'12'}
         borderRadius={'10'}
         width={'60%'} mt={'12'} marginLeft={'50px'}
@@ -38,24 +43,18 @@ const CryptoTextData = ({ stylesEl, data: barData, crypto }: ICryptoTextData) =>
               </Tr>
             </Thead>
             <Tbody>
-              <Tr>
-                <Td fontSize={'18px'}>Ethereum</Td>
-                <Td fontSize={'18px'}>{new Date(1646654400).toDateString()}</Td>
-                <Td>Traders warn that ETH price could fall to $1,700, triggering a “turbo nuke” in altcoins and
-                  altering the market structure of a struggling bull market.</Td>
-              </Tr>
-              <Tr>
-                <Td fontSize={'18px'}>Ethereum</Td>
-                <Td fontSize={'18px'}>{new Date(1646654400).toDateString()}</Td>
-                <Td>Traders warn that ETH price could fall to $1,700, triggering a “turbo nuke” in altcoins and
-                  altering the market structure of a struggling bull market.</Td>
-              </Tr>
-              <Tr>
-                <Td fontSize={'18px'}>Ethereum</Td>
-                <Td fontSize={'18px'}>{new Date(1646654400).toDateString()}</Td>
-                <Td>Traders warn that ETH price could fall to $1,700, triggering a “turbo nuke” in altcoins and
-                  altering the market structure of a struggling bull market.</Td>
-              </Tr>
+              {
+                newsAPI.map((news, key) => {
+                  const date = moment(Number(news.ArticleTimeStamp.N) * 1000).toDate().toString();
+                  return (
+                    <Tr key={key}>
+                      <Td fontSize={'18px'}>{news.CryptoSymbolID.S}</Td>
+                      <Td fontSize={'18px'}>{date}</Td>
+                      <Td>{news.Content.S}</Td>
+                    </Tr>
+                  );
+                })
+              }
             </Tbody>
           </Table>
         </Box>
@@ -67,16 +66,18 @@ const CryptoTextData = ({ stylesEl, data: barData, crypto }: ICryptoTextData) =>
         py={'6'}
         px={'12'}
         borderRadius={'10'}
+        height={'100%'}
         width={'60%'} mt={'12'} marginLeft={'50px'}
       >
         <Text fontSize={'4xl'}>Sentiment Analysis</Text>
         <Text fontSize={'18px'}>Performing sentiment analysis for {crypto} news </Text>
         <Box mt={'12'} backgroundColor={'white'} borderRadius={'10'}>
           <TypeChooser>
-            {(type: any) => barData != null ? <ChartHorizontal data={barData} /> : <p>Nothing yet..</p>}
+            {(type: any) => <ChartHorizontal news={sentimentAnalysis} />}
           </TypeChooser>
         </Box>
       </Box>
+
     </Flex>
   );
 };

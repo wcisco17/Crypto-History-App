@@ -5,16 +5,17 @@ import { ChartCanvas, Chart } from 'react-stockcharts';
 import { BarSeries } from 'react-stockcharts/lib/series';
 import { XAxis, YAxis } from 'react-stockcharts/lib/axes';
 import { fitWidth } from 'react-stockcharts/lib/helper';
+import { SentimentAnalysi } from '../../utils/global.types';
 
 type IChartHorizontalProps = {
-  data: any;
   width?: any;
   ratio?: any;
+  news: SentimentAnalysi[]
 }
 
 class BarChart extends React.Component<IChartHorizontalProps> {
   render() {
-    const { data, width, ratio } = this.props;
+    const { width, ratio, news } = this.props;
 
     return (
       <ChartCanvas
@@ -24,16 +25,16 @@ class BarChart extends React.Component<IChartHorizontalProps> {
         margin={{ left: 80, right: 10, top: 20, bottom: 30 }}
         type={'svg'}
         seriesName="Fruits"
-        xExtents={(list: any) => list.map((d: any) => d.x)}
-        data={data}
-        xAccessor={(d: any) => d.x}
+        xExtents={(list: SentimentAnalysi[]) => list.map((d: SentimentAnalysi) => d.Sentiment.S)}
+        data={news}
+        xAccessor={(d: SentimentAnalysi) => d.Sentiment.S}
         xScale={scalePoint()}
         padding={1}
       >
-        <Chart id={1} yExtents={(d: any) => [0, d.y]}>
+        <Chart id={1} yExtents={(d: SentimentAnalysi) => [0, d.SentimentScore.N]}>
           <XAxis axisAt="bottom" orient="bottom" />
           <YAxis axisAt="left" orient="left" />
-          <BarSeries yAccessor={(d: any) => d.y} />
+          <BarSeries yAccessor={(d: SentimentAnalysi) => d.SentimentScore.N} />
         </Chart>
       </ChartCanvas>
 

@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import { config } from '../utils/theme';
 import { Box, Text } from '@chakra-ui/react';
-import { useRouter } from 'next/router';
 
 type ICryptoCard = {
   cryptoCoins: {
@@ -11,10 +10,10 @@ type ICryptoCard = {
     price: number;
     name: string;
   }
+  onClick: () => void;
 }
 
-export const CryptoCard = ({ cryptoCoins: { src, symbol, lastUpdated, price, name } }: ICryptoCard) => {
-  const router = useRouter();
+export const CryptoCard = ({ cryptoCoins: { src, symbol, lastUpdated, price, name }, onClick }: ICryptoCard) => {
   const cryptoLogoSize = '60%';
   let styles = {
     backgroundColor: config.colors.brand.main,
@@ -24,10 +23,7 @@ export const CryptoCard = ({ cryptoCoins: { src, symbol, lastUpdated, price, nam
 
   const stylesEl = useRef(styles);
   return (
-    <div onClick={() => router.push(
-      '/crypto/[crypto]',
-      `/crypto/${name}`
-    )}>
+    <div onClick={onClick}>
       <Box
         borderColor={stylesEl.current.borderColor}
         borderWidth={2}

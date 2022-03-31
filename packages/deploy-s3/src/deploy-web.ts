@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import { uploadS3Files } from './uploadS3.js';
-import { loadS3Client, S3 } from '@crypto-aws/client';
+import { loadS3Client, PutObjectCommandInput, S3 } from '@crypto-aws/client';
 
 dotenv.config({
   path: '.env.local'
@@ -36,10 +36,11 @@ async function getPreviousWebsiteVersion(client: S3) {
 }
 
 async function uploadWebsiteToS3(client: S3) {
-  const publicFile = '/Users/williamssissoko/WebstormProjects/crypto-history-app/apps/web/dist';
-  let buildStructure = uploadS3Files(publicFile, 'dist', process.env.AWS_S3_BUCKET as string);
-  try {
+  const publicFile = '/Users/williamssissoko/WebstormProjects/crypto-history-app/apps/web/out';
+  const buildStructure: PutObjectCommandInput[] = [];
+  uploadS3Files(publicFile, 'out', process.env.AWS_S3_BUCKET as string, buildStructure);
 
+  try {
     for (const files of buildStructure) {
       const upload = await client?.upload({
         Bucket: (files.Bucket as string),
