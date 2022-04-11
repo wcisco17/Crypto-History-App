@@ -1,5 +1,7 @@
 # Crypto-History Web app (University Project)
 
+### Course: CST3130 Advanced Web Development with Big Data
+
 Crypto-history is a web app that pulls numerical and text data from external API's on specific crypto-currencies. Our cloud architecture consists of different parts, DynamoDB, S3, Sagemaker, lambda, and API gateway. The architecture diagram is shown below like so: (Here is the website link):
 http://crypto-history-dev.s3-website-us-east-1.amazonaws.com
 
