@@ -4,14 +4,11 @@ import type {
   CryptoCompareOHLCVResult,
   TypeofHistoricalData
 } from './numerical.types.js';
-import { LIMIT, TimeUnit } from './numerical.types';
-import { COIN_MARKET_CAP_KEY, CRYPTO_COMPARE_KEY, CRYPTO_COMPARE_URL, COIN_API_KEY } from './constant.js';
+import { COIN_API_KEY, CRYPTO_COMPARE_KEY, CRYPTO_COMPARE_URL } from './constant.js';
 import fetch from 'cross-fetch';
 import { IHistoricalDataInput } from './global.types.js';
-import { convertToUnixEpoch } from './util.js';
 import dotenv from 'dotenv';
 
-dotenv.config();
 
 /*
   @api - Coin API GET Request

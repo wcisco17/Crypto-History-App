@@ -111,7 +111,7 @@ async function getSyntheticData(s) {
   return (await db.query({
     TableName: "CryptoPricesAnalysis",
     KeyConditionExpression: "CryptoSymbolID = :p_id",
-    Limit: 2,
+    Limit: 150,
     ExpressionAttributeValues: {
       ":p_id": {
         "S": symbol
@@ -132,7 +132,7 @@ exports.handler = async (event) => {
     let symbol = message.slice(18);
     let query = {
       KeyConditionExpression: "CryptoSymbolID = :p_id",
-      Limit: 2,
+      Limit: 150,
       ExpressionAttributeValues: {
         ":p_id": {
           "S": symbol

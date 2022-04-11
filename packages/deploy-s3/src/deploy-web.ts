@@ -1,10 +1,16 @@
 import dotenv from 'dotenv';
 import { uploadS3Files } from './uploadS3.js';
 import { loadS3Client, PutObjectCommandInput, S3 } from '@crypto-aws/client';
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config({
   path: '.env.local'
 });
+
+// @ts-ignore
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 async function deletePreviousContent(client: S3, previousContent: S3.Types.DeleteObjectsRequest) {
   return await client.deleteObjects(previousContent, (err, res) => {
@@ -36,7 +42,7 @@ async function getPreviousWebsiteVersion(client: S3) {
 }
 
 async function uploadWebsiteToS3(client: S3) {
-  const publicFile = '/Users/williamssissoko/WebstormProjects/crypto-history-app/apps/web/out';
+  const publicFile = path.join(__dirname, '../../../apps/web/out');
   const buildStructure: PutObjectCommandInput[] = [];
   uploadS3Files(publicFile, 'out', process.env.AWS_S3_BUCKET as string, buildStructure);
 

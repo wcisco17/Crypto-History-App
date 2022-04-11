@@ -1,2 +1,2 @@
-export declare const COIN_API_KEY: string | undefined, COIN_MARKET_CAP_KEY: string | undefined, COIN_MARKET_URL: string | undefined, COIN_API_URL: string | undefined, NEW_API_ORG_KEY: string | undefined, CRYPTO_COMPARE_KEY: string | undefined, NEWS_API_ORG_URL: string | undefined, CRYPTO_COMPARE_URL: string | undefined;
+export declare const COIN_API_KEY: any, COIN_MARKET_CAP_KEY: any, COIN_MARKET_URL: any, COIN_API_URL: any, NEW_API_ORG_KEY: any, CRYPTO_COMPARE_KEY: any, NEWS_API_ORG_URL: any, CRYPTO_COMPARE_URL: any;
 //# sourceMappingURL=constant.d.ts.map

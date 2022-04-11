@@ -13,9 +13,22 @@ import { OHLCTooltip } from 'react-stockcharts/lib/tooltip';
 import { fitWidth } from 'react-stockcharts/lib/helper';
 import { last } from 'react-stockcharts/lib/utils';
 
+type IData = {
+  close: number;
+  date: Date;
+  high: number;
+  low: number;
+  open: number;
+  predictedData: {
+    mean: number;
+    nine: number;
+    one: number
+  }
+}
+
 type ICandleStickProps = {
   type: string
-  data: any;
+  data: IData[];
   width?: any;
   ratio?: any
 }
@@ -54,7 +67,6 @@ class CandleStickChartForDiscontinuousIntraDay extends React.Component<ICandleSt
   }
 
   render() {
-
     const { type, width, ratio } = this.props;
     const CandleStickChartWithZoomPan = {
       type: 'svg',
@@ -144,14 +156,9 @@ class CandleStickChartForDiscontinuousIntraDay extends React.Component<ICandleSt
           />
         </Chart>
 
-        <Chart id={2}
-               yExtents={(d: any) => [d.predictedData.mean]}>
-          {/*<XAxis axisAt="bottom" orient="bottom" />*/}
-          {/*<YAxis*/}
-          {/*  axisAt="right"*/}
-          {/*  orient="right"*/}
-          {/*  ticks={5}*/}
-          {/*/>*/}
+        <Chart id={2} yExtents={(d: IData) => {
+          return d.predictedData.mean;
+        }}>
           <MouseCoordinateX
             at="bottom"
             orient="bottom"
@@ -162,15 +169,20 @@ class CandleStickChartForDiscontinuousIntraDay extends React.Component<ICandleSt
             displayFormat={format('.2f')} />
 
           <LineSeries
-            yAccessor={(d: any) => d.predictedData.mean}
+            yAccessor={(d: IData) => {
+              if (d.open == 0) return d.predictedData.mean;
+            }}
             stroke="#ff7f0e"
             strokeDasharray="Dot" />
           <ScatterSeries
-            yAccessor={(d: any) => d.predictedData.mean}
+            yAccessor={(d: IData) => {
+              if (d.open == 0) return d.predictedData.mean;
+            }}
             marker={SquareMarker}
             markerProps={{ width: 6, stroke: '#ff7f0e', fill: '#ff7f0e' }} />
           <OHLCTooltip forChart={1} origin={[-40, 0]} />
         </Chart>
+
         <CrossHairCursor />
       </ChartCanvas>
     );

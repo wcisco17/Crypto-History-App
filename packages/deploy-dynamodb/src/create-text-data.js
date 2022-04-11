@@ -83,7 +83,7 @@ function createTextData(client, coinName, limit, date, hour, convertTime, coinCo
                             articalTimeStamp: convertTime
                         });
                     }
-                    return [2 /*return*/, Promise.all(newApiData.map(function (data) { return __awaiter(_this, void 0, void 0, function () {
+                    return [2 /*return*/, newApiData.map(function (data) { return __awaiter(_this, void 0, void 0, function () {
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
                                     case 0: return [4 /*yield*/, client.send(new client_1.PutItemCommand({
@@ -100,7 +100,7 @@ function createTextData(client, coinName, limit, date, hour, convertTime, coinCo
                                         return [2 /*return*/];
                                 }
                             });
-                        }); }))];
+                        }); })];
             }
         });
     });

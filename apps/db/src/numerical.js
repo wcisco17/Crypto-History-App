@@ -42,8 +42,6 @@ exports.__esModule = true;
 exports.getHistoricalCryptoCompareOHLCVData = exports.getLatestCoinMarketCapCryptoQuote = exports.getHistoricalCoinAPIData = void 0;
 var constant_js_1 = require("./constant.js");
 var cross_fetch_1 = __importDefault(require("cross-fetch"));
-var dotenv_1 = __importDefault(require("dotenv"));
-dotenv_1["default"].config();
 function getHistoricalCoinAPIData(_a) {
     var _b;
     var symbol = _a.symbol, limit = _a.limit, time_start = _a.time_start, historical = _a.historical, time_end = _a.time_end, period_id = _a.period_id;
@@ -52,7 +50,7 @@ function getHistoricalCoinAPIData(_a) {
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
-                    HISTORICAL_URL = "https://rest.coinapi.io/v1/".concat(historical, "/").concat(symbol.coinapi, "/history?time_start=").concat(time_start, "&limit=").concat(limit);
+                    HISTORICAL_URL = "https://rest.coinapi.io/v1/" + historical + "/" + symbol.coinapi + "/history?time_start=" + time_start + "&limit=" + limit;
                     _c.label = 1;
                 case 1:
                     _c.trys.push([1, 6, , 7]);
@@ -76,7 +74,7 @@ function getHistoricalCoinAPIData(_a) {
                 case 5: return [3 /*break*/, 7];
                 case 6:
                     e_1 = _c.sent();
-                    throw new Error("[COIN_API FAILED] - Cause: ".concat(e_1));
+                    throw new Error("[COIN_API FAILED] - Cause: " + e_1);
                 case 7: return [2 /*return*/];
             }
         });
@@ -90,7 +88,7 @@ function getLatestCoinMarketCapCryptoQuote(_a) {
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
-                    url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?slug=".concat(symbol.coinmarketcap);
+                    url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?slug=" + symbol.coinmarketcap;
                     _b.label = 1;
                 case 1:
                     _b.trys.push([1, 4, , 5]);
@@ -116,7 +114,7 @@ function getLatestCoinMarketCapCryptoQuote(_a) {
                     return [3 /*break*/, 5];
                 case 4:
                     e_2 = _b.sent();
-                    throw new Error("[COIN_MARKET_CAP Failed] - Cause: ".concat(e_2));
+                    throw new Error("[COIN_MARKET_CAP Failed] - Cause: " + e_2);
                 case 5: return [2 /*return*/];
             }
         });
@@ -131,14 +129,14 @@ function getHistoricalCryptoCompareOHLCVData(_a) {
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
-                    isAggregate = ((_b = aggregate) === null || _b === void 0 ? void 0 : _b.length) >= 1 ? "&aggregate".concat(aggregate) : '';
-                    url = "".concat(constant_js_1.CRYPTO_COMPARE_URL, "/data/index/histo/underlying/day?market=CCMVDA&base=").concat(symbol.coinCompare, "&quote=USD&limit=").concat(limit, "&=toTs=").concat(time_start).concat(isAggregate);
+                    isAggregate = ((_b = aggregate) === null || _b === void 0 ? void 0 : _b.length) >= 1 ? "&aggregate" + aggregate : '';
+                    url = constant_js_1.CRYPTO_COMPARE_URL + "/data/index/histo/underlying/day?market=CCMVDA&base=" + symbol.coinCompare + "&quote=USD&limit=" + limit + "&=toTs=" + time_start + isAggregate;
                     _c.label = 1;
                 case 1:
                     _c.trys.push([1, 4, , 5]);
                     return [4 /*yield*/, (0, cross_fetch_1["default"])(url, {
                             headers: {
-                                authorization: "Apikey ".concat(constant_js_1.CRYPTO_COMPARE_KEY)
+                                authorization: "Apikey " + constant_js_1.CRYPTO_COMPARE_KEY
                             }
                         })];
                 case 2:
@@ -149,7 +147,7 @@ function getHistoricalCryptoCompareOHLCVData(_a) {
                     return [2 /*return*/, data];
                 case 4:
                     e_3 = _c.sent();
-                    throw new Error("[Crypto_Compare Failed] - Cause ".concat(e_3));
+                    throw new Error("[Crypto_Compare Failed] - Cause " + e_3);
                 case 5: return [2 /*return*/];
             }
         });

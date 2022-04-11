@@ -16,7 +16,7 @@ const Home = () => {
     setTimeout(() => {
       localStorage.setItem('key', `get-crypto-prices-${name}`);
       window.location.reload()
-    }, 10)
+    }, 20)
   }
 
   function back() {
@@ -71,7 +71,6 @@ const Home = () => {
     }
 
     if (!cryptoItemsExist || typeof cryptoItemsExist === 'string') {
-      console.log(cryptoItemsExist);
       return <Text>Too fast! Give data a second incoming...</Text>;
     } else {
 

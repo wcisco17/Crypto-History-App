@@ -132,17 +132,17 @@ import { createTextData } from './create-text-data.js';
 
         const convertTime = convertToUnixEpoch(time);
 
-        // const numerical = await createNumerical({
-        //     client,
-        //     coinName,
-        //     coinapi: coinApi,
-        //     coinCompare,
-        //     limit: (amount.toString() as string),
-        //     time,
-        //     hour: (hour as string),
-        //     convertTime
-        //   }
-        // );
+        const numerical = await createNumerical({
+            client,
+            coinName,
+            coinapi: coinApi,
+            coinCompare,
+            limit: (amount.toString() as string),
+            time,
+            hour: (hour as string),
+            convertTime
+          }
+        );
 
         const text_data = await createTextData(
           client,
@@ -154,7 +154,7 @@ import { createTextData } from './create-text-data.js';
           coinCompare
         );
 
-        Promise.all([text_data]).then(([data]) => {
+        Promise.all([text_data, numerical]).then(([_, __]) => {
           console.log(
             `${hourIdx} Successfully added both [numericalResult & testResult] with dates: ${time}`
           );

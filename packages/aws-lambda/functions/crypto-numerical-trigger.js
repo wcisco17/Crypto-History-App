@@ -84,7 +84,7 @@ async function createBucketTrainingJob(symbolId, priceStamp) {
 
     const filterCryptoItems = cryptoItems.Items.filter((items) => {
       const timeStampItem = items.PriceTimeStamp.N.toString().substr(0, 5);
-      if (timeStampItem === timeStamp) return items
+      if (timeStampItem == timeStamp) return items
     });
 
     const latestDates = getLatestDate(cryptoItems.Items);

@@ -53,7 +53,7 @@ function getHistoricalNewsApiData(_a) {
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
-                    url = "".concat(constant_js_1.NEWS_API_ORG_URL, "?q=").concat(symbol.newsApi, "&pageSize=").concat(limit, "&from=").concat(time_start, "&to=").concat(time_end, "&sortBy=popularity");
+                    url = constant_js_1.NEWS_API_ORG_URL + "?q=" + symbol.newsApi + "&pageSize=" + limit + "&from=" + time_start + "&to=" + time_end + "&sortBy=popularity";
                     _b.label = 1;
                 case 1:
                     _b.trys.push([1, 4, , 5]);
@@ -71,7 +71,7 @@ function getHistoricalNewsApiData(_a) {
                     return [2 /*return*/, data];
                 case 4:
                     e_1 = _b.sent();
-                    throw new Error("[News_API Failed] - Failed ".concat(e_1));
+                    throw new Error("[News_API Failed] - Failed " + e_1);
                 case 5: return [2 /*return*/];
             }
         });
@@ -89,11 +89,11 @@ function getHistoricalCryptoCompareNewsData(_a) {
                     _b.label = 1;
                 case 1:
                     _b.trys.push([1, 4, , 5]);
-                    url = "".concat(constant_js_1.CRYPTO_COMPARE_URL, "/data/v2/news/?feeds=cryptocompare,cointelegraph,coindesk&?lang=EN&lTs=").concat(time, "&categories=").concat(symbol.coinCompare);
+                    url = constant_js_1.CRYPTO_COMPARE_URL + "/data/v2/news/?feeds=cryptocompare,cointelegraph,coindesk&?lang=EN&lTs=" + time + "&categories=" + symbol.coinCompare;
                     return [4 /*yield*/, (0, cross_fetch_1["default"])(url, {
                             method: 'GET',
                             headers: {
-                                authorization: "Apikey ".concat(constant_js_1.CRYPTO_COMPARE_KEY)
+                                authorization: "Apikey " + constant_js_1.CRYPTO_COMPARE_KEY
                             }
                         })];
                 case 2:
@@ -104,7 +104,7 @@ function getHistoricalCryptoCompareNewsData(_a) {
                     return [2 /*return*/, data];
                 case 4:
                     e_2 = _b.sent();
-                    throw new Error("[Crypto_Compare Failed] - Failed ".concat(e_2));
+                    throw new Error("[Crypto_Compare Failed] - Failed " + e_2);
                 case 5: return [2 /*return*/];
             }
         });

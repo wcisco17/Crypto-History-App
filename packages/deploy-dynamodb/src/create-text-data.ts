@@ -12,7 +12,7 @@ type INewsApiData = {
 }
 
 export async function createTextData(client: DynamoDB, coinName: string, limit: string, date: string, hour: string, convertTime: number, coinCompare: S3FullCryptoName):
-  Promise<PutItemCommandOutput[] | void[]> {
+  Promise<any> {
   let newApiData: INewsApiData[] = [];
 
   const historicalNewsData = await getHistoricalNewsApiData({
@@ -48,17 +48,15 @@ export async function createTextData(client: DynamoDB, coinName: string, limit: 
     });
   }
 
-  return Promise.all(
-    newApiData.map(async data => {
-      await client.send(new PutItemCommand({
-        TableName: 'CryptoNewsAPI',
-        Item: {
-          CryptoSymbolID: { S: data.currencySymbol },
-          ArticleTimeStamp: { N: convertTime.toString() },
-          ArticleID: { S: data.id.toString() },
-          Content: { S: data.content }
-        }
-      }));
-    })
-  );
+  return newApiData.map(async data => {
+    await client.send(new PutItemCommand({
+      TableName: 'CryptoNewsAPI',
+      Item: {
+        CryptoSymbolID: { S: data.currencySymbol },
+        ArticleTimeStamp: { N: convertTime.toString() },
+        ArticleID: { S: data.id.toString() },
+        Content: { S: data.content }
+      }
+    }));
+  });
 }

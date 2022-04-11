@@ -48,6 +48,7 @@ exports.__esModule = true;
 var client_1 = require("@crypto-aws/client");
 var create_crypto_js_1 = require("./create-crypto.js");
 var inquirer_util_js_1 = require("./inquirer-util.js");
+var create_numerical_js_1 = require("./create-numerical.js");
 var util_js_1 = require("@crypto-api/db/src/util.js");
 var create_text_data_js_1 = require("./create-text-data.js");
 (function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -147,7 +148,7 @@ var create_text_data_js_1 = require("./create-text-data.js");
                 min = 10;
                 endMin = 60;
                 _loop_1 = function () {
-                    var time, minText, hourText, currentTime, convertTime, text_data;
+                    var time, minText, hourText, currentTime, convertTime, numerical, text_data;
                     return __generator(this, function (_b) {
                         switch (_b.label) {
                             case 0:
@@ -164,11 +165,23 @@ var create_text_data_js_1 = require("./create-text-data.js");
                                     minText = "".concat(min);
                                 time = "".concat(date, "T").concat(hourText, ":").concat(minText, ":00");
                                 convertTime = (0, util_js_1.convertToUnixEpoch)(time);
-                                return [4 /*yield*/, (0, create_text_data_js_1.createTextData)(client, coinName, amount.toString(), date, hour, convertTime, coinCompare)];
+                                return [4 /*yield*/, (0, create_numerical_js_1.createNumerical)({
+                                        client: client,
+                                        coinName: coinName,
+                                        coinapi: coinApi,
+                                        coinCompare: coinCompare,
+                                        limit: amount.toString(),
+                                        time: time,
+                                        hour: hour,
+                                        convertTime: convertTime
+                                    })];
                             case 1:
+                                numerical = _b.sent();
+                                return [4 /*yield*/, (0, create_text_data_js_1.createTextData)(client, coinName, amount.toString(), date, hour, convertTime, coinCompare)];
+                            case 2:
                                 text_data = _b.sent();
-                                Promise.all([text_data]).then(function (_a) {
-                                    var data = _a[0];
+                                Promise.all([text_data, numerical]).then(function (_a) {
+                                    var _ = _a[0], __ = _a[1];
                                     console.log("".concat(hourIdx_1, " Successfully added both [numericalResult & testResult] with dates: ").concat(time));
                                 })["catch"](console.log);
                                 min++;

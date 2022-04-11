@@ -39,7 +39,7 @@ function updateTable(CryptoSymbolID, ArticleTimeStamp, INFO) {
   const SentimentScore = getSentimentScore(INFO);
 
   const params = {
-    TableName: "CryptoNewsAnalysis",
+    TableNamew: "CryptoNewsAnalysis",
     Item: {
       CryptoSymbolID: {
         S: CryptoSymbolID
