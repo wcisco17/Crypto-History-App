@@ -6,7 +6,6 @@ http://crypto-history-dev.s3-website-us-east-1.amazonaws.com
 ### Architecture
 ![Screen Shot 2022-04-11 at 2 39 06 PM](https://user-images.githubusercontent.com/35783824/162807175-2ec529f7-a982-4ce7-983e-0fdef9fb1558.png)
 
-
 ## Description
 
 Our external APIs, prices, news, and synthetic come from different sources. Our price data comes from CoinAPI and Coin-compare, the news comes from the news API, and the synthetic data is provided by us students individually. The first step in the diagram showcases a script in crypto-history-app/packages/deploy- dynamodb/src/index.ts; this is our entry program where we get all of our data from the external APIs. When we run the prompt, we must specify the coin data we're pulling; for example, it will give us a choice between Bitcoin, Ethereum, or xrp; after that, we must choose the date we'd like to pull from, then the data is removed and pushed to dynamo DB.
@@ -26,6 +25,11 @@ On the other side of our diagram, we have another command line pointing to our s
 
 The machine learning algorithm we used for our numerical data is DeepAR, and we used 500 points for our test files and took 30% for our training file. We created a separate S3 bucket once we hit 500 points; this was our “unseen” data. The data points are separated per minute; we then pulled 50+ unseen data points to test our prediction. Unfortunately, it did not give us an accurate forecast. We also ran into an issue plotting our numerical prediction. Nonetheless, we had no trouble plotting our synthetic and numerical data, but effectively, the orange is our “prediction” when zoomed in.
 
+
+## Website Screenshot
+![Screen Shot 2022-04-11 at 2 43 23 PM](https://user-images.githubusercontent.com/35783824/162807834-ce9ee505-85de-4949-830b-7c5a59620918.png)
+![Screen Shot 2022-04-11 at 2 43 49 PM](https://user-images.githubusercontent.com/35783824/162807907-22039c3d-7293-4540-9070-d558898ad07a.png)
+![Screen Shot 2022-04-11 at 2 44 02 PM](https://user-images.githubusercontent.com/35783824/162807940-5166a036-0c5a-4c42-b38b-d427d4b28842.png)
 
 ## Codebase Architecture
 
