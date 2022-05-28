@@ -2,8 +2,7 @@
 
 ### Course: CST3130 Advanced Web Development with Big Data
 
-Crypto-history is a web app that pulls numerical and text data from external API's on specific crypto-currencies. Our cloud architecture consists of different parts, DynamoDB, S3, Sagemaker, lambda, and API gateway. The architecture diagram is shown below like so: (Here is the website link):
-http://crypto-history-dev.s3-website-us-east-1.amazonaws.com
+Crypto-history is a web app that pulls numerical and text data from external API's on specific crypto-currencies. Our cloud architecture consists of different parts, DynamoDB, S3, Sagemaker, lambda, and API gateway. The architecture diagram is shown below like so
 
 ### Architecture
 ![Screen Shot 2022-04-11 at 2 39 06 PM](https://user-images.githubusercontent.com/35783824/162807175-2ec529f7-a982-4ce7-983e-0fdef9fb1558.png)
